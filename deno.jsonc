@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "init": "deno install -qAf https://deno.land/x/packup/cli.ts",
+    "dev": "packup index.html",
+  }
+}
