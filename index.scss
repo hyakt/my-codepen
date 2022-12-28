@@ -1,3 +1,326 @@
-h1 {
-  color: red;
+@keyframes clip1 {
+  0% {
+    clip-path: polygon(0 40%, 100% 40%, 100% 47%, 0 47%);
+    transform: translate(6%, 0%);
+  }
+
+  20% {
+    clip-path: polygon(0 70%, 100% 70%, 100% 70%, 0 70%);
+    transform: translate(-4%, 0%);
+  }
+
+  40% {
+    clip-path: polygon(0 43%, 100% 43%, 100% 53%, 0 53%);
+    transform: translate(-6%, 0%);
+    backdrop-filter: invert(1);
+  }
+
+  60% {
+    clip-path: polygon(0 48%, 100% 48%, 100% 55%, 0 55%);
+    transform: translate(4%, 0%);
+  }
+
+  80% {
+    clip-path: polygon(0 90%, 100% 90%, 100% 50%, 0 90%);
+    transform: translate(-7%, 0%);
+  }
+
+  80% {
+    clip-path: polygon(0 90%, 100% 90%, 100% 80%, 0 80%);
+    transform: translate(10%, 0%);
+  }
+
+  100% {
+    clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%);
+    transform: translate(-7%, 0%);
+  }
+}
+
+@keyframes clip2 {
+  0% {
+    clip-path: polygon(0 74%, 100% 74%, 100% 81%, 0 81%);
+    transform: translate(-0%, 0%);
+  }
+
+  20% {
+    clip-path: polygon(0 20%, 100% 20%, 100% 27%, 0 27%);
+    transform: translate(-4%, 0%);
+  }
+
+  40% {
+    clip-path: polygon(0 82%, 100% 82%, 100% 90%, 0 90%);
+    transform: translate(1%, -0%);
+  }
+
+  60% {
+    clip-path: polygon(0 26%, 100% 26%, 100% 28%, 0 28%);
+    transform: translate(6%, -0%);
+  }
+
+  80% {
+    clip-path: polygon(0 68%, 100% 68%, 100% 71%, 0 71%);
+    transform: translate(-7%, -0%);
+  }
+
+  100% {
+    clip-path: polygon(0 2%, 100% 2%, 100% 10%, 0 10%);
+    transform: translate(4%, -0%);
+  }
+}
+
+@keyframes move-r {
+  0% {
+    transform: translate(10px, 0px);
+  }
+  10% {
+    transform: translate(0px, 5px);
+  }
+  40% {
+    transform: translate(2px, -1px);
+  }
+  60% {
+    transform: translate(-10px, 0px);
+  }
+  80% {
+    transform: translate(4px, -1px);
+  }
+  100% {
+    transform: translate(0px, 3px);
+  }
+}
+
+@keyframes move-g {
+  0% {
+    transform: translate(-10px, 0px);
+  }
+  10% {
+    transform: translate(7px, 0px);
+  }
+  40% {
+    transform: translate(0px, -2px);
+  }
+  60% {
+    transform: translate(10px, px);
+  }
+  80% {
+    transform: translate(0px, 2px);
+  }
+  100% {
+    transform: translate(2px, -1px);
+  }
+}
+
+@keyframes move-b {
+  0% {
+    transform: translate(-1px, 0px);
+  }
+  10% {
+    transform: translate(0px, 1px);
+  }
+  40% {
+    transform: translate(-1px, 0px);
+  }
+  60% {
+    transform: translate(1px, -1px);
+  }
+  80% {
+    transform: translate(-1px, 1px);
+  }
+  100% {
+    transform: translate(2px, -1px);
+  }
+}
+
+.my-glitch {
+  position: relative;
+  width: 100px;
+  height: 20px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  background-color: black;
+  background-position: center;
+  background-size: 0;
+
+  &:hover {
+    > div {
+      mix-blend-mode: screen;
+    }
+
+    .r {
+      animation: move-r 0.3s steps(1, jump-end) infinite alternate both;
+    }
+    .g {
+      animation: move-g 0.3s steps(1, jump-end) infinite alternate both;
+    }
+    .b {
+      animation: move-b 0.3s steps(1, jump-end) infinite alternate both;
+    }
+    .clip1 {
+      animation: clip1 0.3s linear infinite alternate both;
+    }
+    .clip2 {
+      animation: clip2 0.3s linear infinite alternate both;
+    }
+  }
+
+  > div {
+    background: inherit;
+    background-size: cover;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      mix-blend-mode: color;
+    }
+
+    &.r::before {
+      background: #f00;
+    }
+    &.g::before {
+      background: #0f0;
+    }
+    &.b::before {
+      background: #00f;
+    }
+  }
+}
+
+@function rand($min, $max) {
+  @return random() * ($max - $min) + $min;
+}
+
+$animation-duration: 3s;
+$glitch-duration: 20%;
+$glitch-frequency: 10;
+$glitch-interval: $glitch-duration / $glitch-frequency;
+
+@mixin rgb-shift($name) {
+  @keyframes rgb-shift-#{$name} {
+    @for $i from 0 to $glitch-frequency {
+      #{$i * $glitch-interval} {
+        transform: translate(#{rand(-10, 10) * 1%}, #{rand(-10, 10) * 1%});
+      }
+    }
+
+    #{$glitch-duration},
+    100% {
+      transform: none;
+    }
+  }
+
+  animation: rgb-shift-#{$name} $animation-duration steps(1, jump-end) infinite alternate
+    both;
+}
+
+@mixin glitch($name) {
+  @keyframes glitch-#{$name} {
+    @for $i from 0 to $glitch-frequency {
+      $left: 0%;
+      $right: 100%;
+      $top: rand(0, 90) * 1%;
+      $bottom: $top + rand(1, 10) * 1%;
+
+      #{$i * $glitch-interval} {
+        clip-path: polygon(
+          $left $top,
+          $right $top,
+          $right $bottom,
+          $left $bottom
+        );
+        transform: translate(#{rand(-8, 8) * 1%}, #{rand(-0.5, 0.5) * 1%});
+      }
+    }
+
+    #{$glitch-duration},
+    100% {
+      clip-path: none;
+      transform: none;
+    }
+  }
+
+  animation: glitch-#{$name} $animation-duration linear infinite alternate both;
+}
+
+body {
+  margin: 0;
+}
+
+.glitch {
+  background: #000 no-repeat center;
+  background-size: 0;
+  height: 20px;
+  width: 100px;
+  position: relative;
+  overflow: hidden;
+
+  &::before,
+  &::after,
+  .channel {
+    background: inherit;
+    background-size: cover;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &::before {
+    @include glitch(before);
+    content: "";
+  }
+
+  &::after {
+    @include glitch(after);
+    content: "";
+  }
+
+  .channel {
+    mix-blend-mode: screen;
+
+    &::before {
+      bottom: 0;
+      content: "";
+      display: block;
+      mix-blend-mode: multiply;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .r {
+    @include rgb-shift(r);
+
+    &::before {
+      background: #f00;
+    }
+  }
+
+  .g {
+    @include rgb-shift(g);
+
+    &::before {
+      background: #0f0;
+    }
+  }
+
+  .b {
+    @include rgb-shift(b);
+
+    &::before {
+      background: #00f;
+    }
+  }
 }
